@@ -1,10 +1,15 @@
 <?php
 
-require'conexao.php';
+$host = "localhost";
+$db = "restaurante";
+$user = "root";
+$pass = "";
+
+$pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8",$user,$pass);
 
 $busca = $_GET['busca'] ?? "";
 
-/* função para limitar texto */
+/* limitar texto */
 function limitarTexto($texto,$limite=12){
 
 $palavras = explode(" ",$texto);
@@ -16,7 +21,7 @@ return implode(" ",array_slice($palavras,0,$limite))."...";
 return $texto;
 }
 
-/* consulta */
+/* busca */
 
 if($busca != ""){
 
@@ -52,6 +57,8 @@ $secao2 = array_slice($receitas,$metade);
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Receitas Naturais para Pets</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -64,35 +71,78 @@ font-family:Segoe UI;
 padding:30px;
 }
 
-
-
-.card-receita{
-height:100%;
-transition:.3s;
-}
-
-.card-receita img{
-height:180px;
-object-fit:cover;
-}
-
-.card-receita:hover{
-transform:scale(1.03);
-}
-
 .section-title{
 margin-top:40px;
 margin-bottom:20px;
 }
 
+/* CARROSSEL */
+
+.carousel-container{
+position:relative;
+}
+
+.carousel-track{
+display:flex;
+overflow-x:auto;
+scroll-behavior:smooth;
+gap:20px;
+padding:10px;
+}
+
+.carousel-track::-webkit-scrollbar{
+display:none;
+}
+
+/* CARDS */
+
+.card-receita{
+min-width:250px;
+max-width:250px;
+flex-shrink:0;
+transition:.3s;
+}
+
+.card-receita img{
+height:160px;
+object-fit:cover;
+}
+
+.card-receita:hover{
+transform:scale(1.05);
+}
+
 .card-body{
 display:flex;
 flex-direction:column;
-justify-content:space-between;
 }
 
 .card-body a{
 margin-top:auto;
+}
+
+/* BOTÕES */
+
+.scroll-btn{
+position:absolute;
+top:40%;
+transform:translateY(-50%);
+background:#26a69a;
+border:none;
+color:white;
+width:40px;
+height:40px;
+border-radius:50%;
+cursor:pointer;
+z-index:10;
+}
+
+.scroll-left{
+left:-10px;
+}
+
+.scroll-right{
+right:-10px;
 }
 
 </style>
@@ -143,11 +193,13 @@ Limpar
 Resultados da busca
 </h3>
 
-<div class="row">
+<div class="carousel-container">
+
+<button class="scroll-btn scroll-left" onclick="scrollCarousel('busca',-300)">❮</button>
+
+<div class="carousel-track" id="busca">
 
 <?php foreach($receitas as $r){ ?>
-
-<div class="col-md-3 mb-4">
 
 <div class="card card-receita">
 
@@ -167,32 +219,37 @@ Resultados da busca
 <?= limitarTexto($r['modPrep']) ?>
 </p>
 
-<a href="receita.php?id=<?= $r['id'] ?>" class="btn btn-success">
+<a href="receita.php?id=<?= $r['id'] ?>" class="btn btn-success w-100">
 Ver Receita
 </a>
 
-</div>
 </div>
 
 </div>
 
 <?php } ?>
+
+</div>
+
+<button class="scroll-btn scroll-right" onclick="scrollCarousel('busca',300)">❯</button>
 
 </div>
 
 <?php }else{ ?>
 
-<!-- PRIMEIRA SEÇÃO -->
+<!-- SEÇÃO 1 -->
 
 <h3 class="section-title">
 🥗 Receitas Saudáveis
 </h3>
 
-<div class="row">
+<div class="carousel-container">
+
+<button class="scroll-btn scroll-left" onclick="scrollCarousel('car1',-300)">❮</button>
+
+<div class="carousel-track" id="car1">
 
 <?php foreach($secao1 as $r){ ?>
-
-<div class="col-md-3 mb-4">
 
 <div class="card card-receita">
 
@@ -212,11 +269,10 @@ Ver Receita
 <?= limitarTexto($r['modPrep']) ?>
 </p>
 
-<a href="receita.php?id=<?= $r['id'] ?>" class="btn btn-success">
+<a href="receita.php?id=<?= $r['id'] ?>" class="btn btn-success w-100">
 Ver Receita
 </a>
 
-</div>
 </div>
 
 </div>
@@ -225,18 +281,24 @@ Ver Receita
 
 </div>
 
+<button class="scroll-btn scroll-right" onclick="scrollCarousel('car1',300)">❯</button>
 
-<!-- SEGUNDA SEÇÃO -->
+</div>
+
+
+<!-- SEÇÃO 2 -->
 
 <h3 class="section-title">
 🍗 Mais Receitas Naturais
 </h3>
 
-<div class="row">
+<div class="carousel-container">
+
+<button class="scroll-btn scroll-left" onclick="scrollCarousel('car2',-300)">❮</button>
+
+<div class="carousel-track" id="car2">
 
 <?php foreach($secao2 as $r){ ?>
-
-<div class="col-md-3 mb-4">
 
 <div class="card card-receita">
 
@@ -256,12 +318,11 @@ Ver Receita
 <?= limitarTexto($r['modPrep']) ?>
 </p>
 
-<a href="receita.php?id=<?= $r['id'] ?>" class="btn btn-success">
+<a href="receita.php?id=<?= $r['id'] ?>" class="btn btn-success w-100">
 Ver Receita
 </a>
 
 </div>
-</div>
 
 </div>
 
@@ -269,9 +330,27 @@ Ver Receita
 
 </div>
 
+<button class="scroll-btn scroll-right" onclick="scrollCarousel('car2',300)">❯</button>
+
+</div>
+
 <?php } ?>
 
 </div>
+
+
+<script>
+
+function scrollCarousel(id,amount){
+
+document.getElementById(id).scrollBy({
+left:amount,
+behavior:"smooth"
+});
+
+}
+
+</script>
 
 </body>
 </html>
