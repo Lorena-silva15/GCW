@@ -2,8 +2,6 @@
 
 require'conexao.php';
 
-$pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8",$user,$pass);
-
 $busca = $_GET['busca'] ?? "";
 
 /* função para limitar texto */
