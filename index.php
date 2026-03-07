@@ -69,6 +69,66 @@ padding:30px;
 scroll-beheavior: smooth;
 }
 
+/* NAVBAR LADO A LADO */
+
+nav{
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+flex-wrap:wrap;
+
+background:rgba(255,255,255,0.4);
+backdrop-filter:blur(15px);
+
+padding:10px 20px;
+border-radius:10px;
+
+}
+
+/* LINKS NA MESMA LINHA */
+
+nav ul{
+display:flex;
+gap:20px;
+list-style:none;
+margin:0;
+padding:0;
+}
+
+nav ul li{
+display:inline-block;
+}
+
+/* FORM BUSCA */
+
+nav form{
+display:flex;
+gap:5px;
+}
+
+section{
+
+background:rgba(255,255,255,0.4);
+backdrop-filter:blur(15px);
+
+border-radius:10px;
+padding:15px;
+margin-bottom:20px;
+
+}
+
+footer{
+
+background:rgba(255,255,255,0.4);
+backdrop-filter:blur(15px);
+
+padding:20px;
+border-radius:10px;
+
+text-align:center;
+
+}
 .section-title{
 margin-top:40px;
 margin-bottom:20px;
