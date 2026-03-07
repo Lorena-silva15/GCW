@@ -1,275 +1,279 @@
 <?php
-require 'conexao.php';
 
-$search = trim($_GET['search'] ?? "");
+require'conexao.php';
 
-if ($search !== "") {
-    $sql = "SELECT * FROM receitas WHERE nome LIKE :search OR ingredientes LIKE :search ORDER BY criado_em DESC";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([':search' => "%$search%"]);
-} else {
-    $stmt = $pdo->query("SELECT * FROM receitas ORDER BY criado_em DESC");
+$pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8",$user,$pass);
+
+$busca = $_GET['busca'] ?? "";
+
+/* função para limitar texto */
+function limitarTexto($texto,$limite=12){
+
+$palavras = explode(" ",$texto);
+
+if(count($palavras) > $limite){
+return implode(" ",array_slice($palavras,0,$limite))."...";
 }
 
+return $texto;
+}
+
+/* consulta */
+
+if($busca != ""){
+
+$sql = "SELECT * FROM receitas 
+WHERE nome LIKE :busca 
+OR ingredientes LIKE :busca";
+
+$stmt = $pdo->prepare($sql);
+$stmt->bindValue(":busca","%$busca%");
+$stmt->execute();
+
 $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+}else{
+
+$sql = "SELECT * FROM receitas";
+$stmt = $pdo->query($sql);
+$receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+}
+
+$total = count($receitas);
+$metade = ceil($total/2);
+
+$secao1 = array_slice($receitas,0,$metade);
+$secao2 = array_slice($receitas,$metade);
+
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Receitas</title>
+<title>Receitas Naturais para Pets</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css"/>
 
 <style>
 
 body{
 background:#f7f9fc;
-font-family:'Segoe UI',sans-serif;
+font-family:Segoe UI;
+padding:30px;
 }
 
-.card{
-border-radius:15px;
-overflow:hidden;
-transition:.3s;
-background:#fff;
-box-shadow:0 4px 12px rgba(0,0,0,.05);
-cursor:pointer;
+
+
+.card-receita{
 height:100%;
+transition:.3s;
 }
 
-.card:hover{
-transform:scale(1.04);
-}
-
-.card img{
-width:100%;
-height:150px;
+.card-receita img{
+height:180px;
 object-fit:cover;
 }
 
-.card-body{
-height:140px;
-}
-
-.card-text{
-display:-webkit-box;
--webkit-line-clamp:3;
--webkit-box-orient:vertical;
-overflow:hidden;
-font-size:14px;
+.card-receita:hover{
+transform:scale(1.03);
 }
 
 .section-title{
-text-align:center;
-margin:40px 0 20px;
-color:#00796b;
-font-weight:600;
+margin-top:40px;
+margin-bottom:20px;
 }
 
-.add-recipe-btn{
-display:block;
-max-width:200px;
-margin:30px auto;
-padding:12px 20px;
-background:#ff9800;
-color:white;
-text-align:center;
-border-radius:20px;
-text-decoration:none;
-font-weight:600;
+.card-body{
+display:flex;
+flex-direction:column;
+justify-content:space-between;
 }
 
-.add-recipe-btn:hover{
-background:#fb8c00;
-}
-
-.swiper{
-padding-bottom:40px;
+.card-body a{
+margin-top:auto;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<nav class="navbar bg-body-tertiary">
-<div class="container-fluid">
+<div class="container">
 
-<a class="navbar-brand">Receitas</a>
+<h1 class="text-center mb-4">
+🐾 Receitas Naturais para Pets
+</h1>
 
-<form method="GET" class="d-flex">
-<input class="form-control me-2" type="search" name="search"
-placeholder="Buscar receita..."
-value="<?= htmlspecialchars($search) ?>">
-<button class="btn btn-outline-success">Buscar</button>
-</form>
 
-<div class="dropdown">
-<button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
-Menu
+<!-- BUSCA -->
+
+<form method="GET" class="mb-5">
+
+<div class="input-group">
+
+<input 
+type="text"
+name="busca"
+class="form-control"
+placeholder="Pesquisar receita..."
+value="<?= htmlspecialchars($busca) ?>"
+>
+
+<button class="btn btn-success">
+Pesquisar
 </button>
 
-<ul class="dropdown-menu">
-<li><a class="dropdown-item" href="formreceita.php">Adicionar Receita</a></li>
-</ul>
-</div>
-
-</div>
-</nav>
-
-<a href="formreceita.html" class="add-recipe-btn">
-Adicionar Receita
+<a href="index.php" class="btn btn-secondary">
+Limpar
 </a>
 
-<main class="container my-4">
+</div>
 
-<?php if(count($receitas) > 0): ?>
+</form>
 
-<h2 class="section-title">Receitas</h2>
 
-<div class="swiper mySwiper">
+<?php if($busca != ""){ ?>
 
-<div class="swiper-wrapper">
+<!-- RESULTADO DA BUSCA -->
 
-<?php foreach($receitas as $r): ?>
+<h3 class="section-title">
+Resultados da busca
+</h3>
 
-<div class="swiper-slide">
+<div class="row">
 
-<div class="card">
+<?php foreach($receitas as $r){ ?>
 
-<?php if($r['imagem']): ?>
-<img src="<?= htmlspecialchars($r['imagem']) ?>" alt="<?= htmlspecialchars($r['nome']) ?>">
-<?php endif; ?>
+<div class="col-md-3 mb-4">
+
+<div class="card card-receita">
+
+<img src="<?= $r['imagem'] ?>" class="card-img-top">
 
 <div class="card-body">
 
-<h5><?= htmlspecialchars($r['nome']) ?></h5>
+<h5><?= $r['nome'] ?></h5>
 
-<p class="card-text">
-<?= htmlspecialchars($r['ingredientes']) ?>
+<p>
+<b>Ingredientes:</b><br>
+<?= limitarTexto($r['ingredientes']) ?>
 </p>
 
+<p>
+<b>Modo:</b><br>
+<?= limitarTexto($r['modPrep']) ?>
+</p>
+
+<a href="receita.php?id=<?= $r['id'] ?>" class="btn btn-success">
+Ver Receita
+</a>
+
+</div>
 </div>
 
 </div>
 
-</div>
-
-<?php endforeach; ?>
+<?php } ?>
 
 </div>
 
-<div class="swiper-pagination"></div>
+<?php }else{ ?>
 
-</div>
+<!-- PRIMEIRA SEÇÃO -->
 
-<h2 class="section-title">Destaques</h2>
+<h3 class="section-title">
+🥗 Receitas Saudáveis
+</h3>
 
-<div class="swiper mySwiper2">
+<div class="row">
 
-<div class="swiper-wrapper">
+<?php foreach($secao1 as $r){ ?>
 
-<?php foreach(array_slice($receitas,0,6) as $r): ?>
+<div class="col-md-3 mb-4">
 
-<div class="swiper-slide">
+<div class="card card-receita">
 
-<div class="card">
-
-<?php if($r['imagem']): ?>
-<img src="<?= htmlspecialchars($r['imagem']) ?>" alt="<?= htmlspecialchars($r['nome']) ?>">
-<?php endif; ?>
+<img src="<?= $r['imagem'] ?>" class="card-img-top">
 
 <div class="card-body">
 
-<h5><?= htmlspecialchars($r['nome']) ?></h5>
+<h5><?= $r['nome'] ?></h5>
 
-<p class="card-text">
-<?= htmlspecialchars($r['ingredientes']) ?>
+<p>
+<b>Ingredientes:</b><br>
+<?= limitarTexto($r['ingredientes']) ?>
 </p>
 
-</div>
-
-</div>
-
-</div>
-
-<?php endforeach; ?>
-
-</div>
-
-<div class="swiper-pagination swiper-pagination2"></div>
-
-</div>
-
-<?php else: ?>
-
-<p class="text-center text-muted">
-Nenhuma receita encontrada.
+<p>
+<b>Modo:</b><br>
+<?= limitarTexto($r['modPrep']) ?>
 </p>
 
-<?php endif; ?>
+<a href="receita.php?id=<?= $r['id'] ?>" class="btn btn-success">
+Ver Receita
+</a>
 
-</main>
+</div>
+</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
+</div>
 
-<script>
+<?php } ?>
 
-const swiper1 = new Swiper(".mySwiper",{
-slidesPerView:3,
-spaceBetween:20,
-loop:true,
-speed:4000,
-
-autoplay:{
-delay:0,
-disableOnInteraction:false
-},
-
-pagination:{
-el:".swiper-pagination",
-clickable:true
-},
-
-breakpoints:{
-0:{slidesPerView:1},
-576:{slidesPerView:2},
-992:{slidesPerView:3}
-}
-
-});
+</div>
 
 
-const swiper2 = new Swiper(".mySwiper2",{
-slidesPerView:3,
-spaceBetween:20,
-loop:true,
-speed:5000,
+<!-- SEGUNDA SEÇÃO -->
 
-autoplay:{
-delay:0,
-disableOnInteraction:false
-},
+<h3 class="section-title">
+🍗 Mais Receitas Naturais
+</h3>
 
-pagination:{
-el:".swiper-pagination2",
-clickable:true
-},
+<div class="row">
 
-breakpoints:{
-0:{slidesPerView:1},
-576:{slidesPerView:2},
-992:{slidesPerView:3}
-}
+<?php foreach($secao2 as $r){ ?>
 
-});
+<div class="col-md-3 mb-4">
 
-</script>
+<div class="card card-receita">
+
+<img src="<?= $r['imagem'] ?>" class="card-img-top">
+
+<div class="card-body">
+
+<h5><?= $r['nome'] ?></h5>
+
+<p>
+<b>Ingredientes:</b><br>
+<?= limitarTexto($r['ingredientes']) ?>
+</p>
+
+<p>
+<b>Modo:</b><br>
+<?= limitarTexto($r['modPrep']) ?>
+</p>
+
+<a href="receita.php?id=<?= $r['id'] ?>" class="btn btn-success">
+Ver Receita
+</a>
+
+</div>
+</div>
+
+</div>
+
+<?php } ?>
+
+</div>
+
+<?php } ?>
+
+</div>
 
 </body>
 </html>
