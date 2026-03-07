@@ -13,7 +13,6 @@ if ($search !== "") {
 
 $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -35,24 +34,25 @@ font-family:'Segoe UI',sans-serif;
 .card{
 border-radius:15px;
 overflow:hidden;
-transition:0.3s;
-background:#ffffff;
-box-shadow:0 4px 12px rgba(0,0,0,0.05);
+transition:.3s;
+background:#fff;
+box-shadow:0 4px 12px rgba(0,0,0,.05);
 cursor:pointer;
+height:100%;
 }
 
 .card:hover{
-transform:scale(1.03);
+transform:scale(1.04);
 }
 
 .card img{
 width:100%;
-height:140px;
+height:150px;
 object-fit:cover;
 }
 
-.card h5{
-font-weight:600;
+.card-body{
+height:140px;
 }
 
 .card-text{
@@ -60,11 +60,12 @@ display:-webkit-box;
 -webkit-line-clamp:3;
 -webkit-box-orient:vertical;
 overflow:hidden;
+font-size:14px;
 }
 
 .section-title{
 text-align:center;
-margin:30px 0 15px;
+margin:40px 0 20px;
 color:#00796b;
 font-weight:600;
 }
@@ -72,7 +73,7 @@ font-weight:600;
 .add-recipe-btn{
 display:block;
 max-width:200px;
-margin:30px auto 20px;
+margin:30px auto;
 padding:12px 20px;
 background:#ff9800;
 color:white;
@@ -86,6 +87,10 @@ font-weight:600;
 background:#fb8c00;
 }
 
+.swiper{
+padding-bottom:40px;
+}
+
 </style>
 </head>
 
@@ -96,21 +101,20 @@ background:#fb8c00;
 
 <a class="navbar-brand">Receitas</a>
 
-<form method="GET" class="d-flex" role="search">
+<form method="GET" class="d-flex">
 <input class="form-control me-2" type="search" name="search"
 placeholder="Buscar receita..."
 value="<?= htmlspecialchars($search) ?>">
-<button class="btn btn-outline-success" type="submit">Buscar</button>
+<button class="btn btn-outline-success">Buscar</button>
 </form>
 
 <div class="dropdown">
-<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+<button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
 Menu
 </button>
 
 <ul class="dropdown-menu">
 <li><a class="dropdown-item" href="formreceita.html">Adicionar Receita</a></li>
-<li><a class="dropdown-item" href="#">Outra opção</a></li>
 </ul>
 </div>
 
@@ -135,19 +139,15 @@ Adicionar Receita
 
 <div class="swiper-slide">
 
-<div class="card" style="width:18rem;margin:auto;">
+<div class="card">
 
 <?php if($r['imagem']): ?>
-
 <img src="<?= htmlspecialchars($r['imagem']) ?>" alt="<?= htmlspecialchars($r['nome']) ?>">
-
 <?php endif; ?>
 
 <div class="card-body">
 
-<h5 class="card-title">
-<?= htmlspecialchars($r['nome']) ?>
-</h5>
+<h5><?= htmlspecialchars($r['nome']) ?></h5>
 
 <p class="card-text">
 <?= htmlspecialchars($r['ingredientes']) ?>
@@ -163,18 +163,9 @@ Adicionar Receita
 
 </div>
 
-<div class="swiper-button-next swiper1-next"></div>
-<div class="swiper-button-prev swiper1-prev"></div>
+<div class="swiper-pagination"></div>
 
 </div>
-
-<?php else: ?>
-
-<p class="text-center text-muted">
-Nenhuma receita encontrada.
-</p>
-
-<?php endif; ?>
 
 <h2 class="section-title">Destaques</h2>
 
@@ -186,19 +177,15 @@ Nenhuma receita encontrada.
 
 <div class="swiper-slide">
 
-<div class="card" style="width:16rem;margin:auto;">
+<div class="card">
 
 <?php if($r['imagem']): ?>
-
 <img src="<?= htmlspecialchars($r['imagem']) ?>" alt="<?= htmlspecialchars($r['nome']) ?>">
-
 <?php endif; ?>
 
 <div class="card-body">
 
-<h5 class="card-title">
-<?= htmlspecialchars($r['nome']) ?>
-</h5>
+<h5><?= htmlspecialchars($r['nome']) ?></h5>
 
 <p class="card-text">
 <?= htmlspecialchars($r['ingredientes']) ?>
@@ -214,10 +201,17 @@ Nenhuma receita encontrada.
 
 </div>
 
-<div class="swiper-button-next swiper2-next"></div>
-<div class="swiper-button-prev swiper2-prev"></div>
+<div class="swiper-pagination swiper-pagination2"></div>
 
 </div>
+
+<?php else: ?>
+
+<p class="text-center text-muted">
+Nenhuma receita encontrada.
+</p>
+
+<?php endif; ?>
 
 </main>
 
@@ -229,29 +223,50 @@ Nenhuma receita encontrada.
 const swiper1 = new Swiper(".mySwiper",{
 slidesPerView:3,
 spaceBetween:20,
-navigation:{
-nextEl:".swiper1-next",
-prevEl:".swiper1-prev"
+loop:true,
+speed:4000,
+
+autoplay:{
+delay:0,
+disableOnInteraction:false
 },
+
+pagination:{
+el:".swiper-pagination",
+clickable:true
+},
+
 breakpoints:{
 0:{slidesPerView:1},
 576:{slidesPerView:2},
 992:{slidesPerView:3}
 }
+
 });
+
 
 const swiper2 = new Swiper(".mySwiper2",{
 slidesPerView:3,
 spaceBetween:20,
-navigation:{
-nextEl:".swiper2-next",
-prevEl:".swiper2-prev"
+loop:true,
+speed:5000,
+
+autoplay:{
+delay:0,
+disableOnInteraction:false
 },
+
+pagination:{
+el:".swiper-pagination2",
+clickable:true
+},
+
 breakpoints:{
 0:{slidesPerView:1},
 576:{slidesPerView:2},
 992:{slidesPerView:3}
 }
+
 });
 
 </script>
