@@ -1,507 +1,330 @@
 <?php
-require 'conexao.php';
+include 'conexao.php';
 
-$busca = $_GET['busca'] ?? "";
+$busca = $_GET['busca'] ?? '';
 
-/* limitar texto */
-function limitarTexto($texto,$limite=12){
-
-$palavras = explode(" ",$texto);
-
-if(count($palavras) > $limite){
-return implode(" ",array_slice($palavras,0,$limite))."...";
-}
-
-return $texto;
-}
-
-/* busca */
-
-if($busca != ""){
-
-$sql = "SELECT * FROM receitas 
-WHERE nome LIKE :busca 
-OR ingredientes LIKE :busca";
-
+if($busca){
+$sql = "SELECT * FROM receitas WHERE nome LIKE ?";
 $stmt = $pdo->prepare($sql);
-$stmt->bindValue(":busca","%$busca%");
-$stmt->execute();
-
+$stmt->execute(["%$busca%"]);
 $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 }else{
-
 $sql = "SELECT * FROM receitas";
 $stmt = $pdo->query($sql);
 $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 }
 
 $total = count($receitas);
 $metade = ceil($total/2);
 
-$secao1 = array_slice($receitas,0,$metade);
-$secao2 = array_slice($receitas,$metade);
-
+$primeira = array_slice($receitas,0,$metade);
+$segunda = array_slice($receitas,$metade);
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-BR">
-
+<html lang="pt-br">
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Receitas Naturais para Pets</title>
 
-<title>Smelly Food</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&family=DynaPuff:wght@400..700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
 
-body{
-background-image: url('img/image.png');
-font-family:"Comic Relief", system-ui;
-padding:30px;
-scroll-beheavior: smooth;
-}
+/* ===== NAVBAR ===== */
 
-/* NAVBAR LADO A LADO */
-
-nav{
-
+nav.navbar{
 display:flex;
 align-items:center;
 justify-content:space-between;
-flex-wrap:wrap;
-
-background:rgba(255,255,255,0.4);
-backdrop-filter:blur(15px);
-
-padding:10px 20px;
-border-radius:10px;
-
-}
-
-/* LINKS NA MESMA LINHA */
-
-nav ul{
-display:flex;
 gap:20px;
-list-style:none;
-margin:0;
-padding:0;
+
+background:rgba(255,255,255,0.35);
+backdrop-filter:blur(15px);
+-webkit-backdrop-filter:blur(15px);
+
+border-radius:12px;
+padding:10px 20px;
+
+box-shadow:0 4px 20px rgba(0,0,0,0.08);
 }
 
-nav ul li{
-display:inline-block;
-}
-
-/* FORM BUSCA */
-
-nav form{
+nav ul.nav{
 display:flex;
-gap:5px;
+align-items:center;
+gap:15px;
+margin:0;
 }
+
+nav ul.nav li a{
+transition:0.25s;
+border-radius:8px;
+}
+
+nav ul.nav li a:hover{
+background:rgba(255,255,255,0.35);
+}
+
+/* ===== SECTIONS ===== */
 
 section{
-
-background:rgba(255,255,255,0.4);
+background:rgba(255,255,255,0.35);
 backdrop-filter:blur(15px);
 
-border-radius:10px;
-padding:15px;
-margin-bottom:20px;
-
+padding:25px;
+margin:30px auto;
+border-radius:12px;
+max-width:1200px;
 }
 
-footer{
+/* ===== FOOTER ===== */
 
-background:rgba(255,255,255,0.4);
+footer{
+background:rgba(255,255,255,0.35);
 backdrop-filter:blur(15px);
 
 padding:20px;
-border-radius:10px;
-
-text-align:center;
-
-}
-.section-title{
 margin-top:40px;
-margin-bottom:20px;
+text-align:center;
+border-radius:12px;
 }
 
-/* CARROSSEL */
+/* ===== BOTÃO ADD ===== */
+
+.add-recipe-btn{
+background:#6abf69;
+border:none;
+color:white;
+padding:10px 18px;
+border-radius:8px;
+text-decoration:none;
+transition:0.2s;
+}
+
+.add-recipe-btn:hover{
+background:#57a856;
+transform:translateY(-2px);
+}
+
+/* ===== CARDS ===== */
+
+.recipe-card{
+min-width:250px;
+max-width:250px;
+margin-right:15px;
+
+border-radius:10px;
+overflow:hidden;
+
+transition:0.25s;
+}
+
+.recipe-card:hover{
+transform:translateY(-6px);
+box-shadow:0 8px 25px rgba(0,0,0,0.15);
+}
+
+.recipe-card img{
+width:100%;
+height:150px;
+object-fit:cover;
+}
+
+/* ===== CARROSSEL ===== */
 
 .carousel-container{
+overflow:hidden;
 position:relative;
 }
 
 .carousel-track{
 display:flex;
-overflow-x:auto;
-gap:20px;
-padding:10px;
-scroll-behavior:smooth;
-scroll-snap-type:x mandatory;
-cursor:grab;
+transition:transform 0.4s ease;
 }
 
-.carousel-track::-webkit-scrollbar{
-display:none;
-}
-
-.card-receita{
-min-width:250px;
-max-width:250px;
-flex-shrink:0;
-transition:.3s;
-scroll-snap-align:start;
-}
-
-.card-receita img{
-height:160px;
-object-fit:cover;
-}
-
-.card-receita:hover{
-transform:scale(1.05);
-}
-
-.card-body{
-display:flex;
-flex-direction:column;
-}
-
-.card-body a{
-margin-top:auto;
-}
-
-/* BOTÕES */
-
-.scroll-btn{
+.carousel-btn{
 position:absolute;
 top:40%;
-transform:translateY(-50%);
-background:#26a69a;
+background:white;
 border:none;
-color:white;
-width:40px;
-height:40px;
-border-radius:50%;
+font-size:25px;
+padding:5px 12px;
 cursor:pointer;
 }
 
-.scroll-left{
-left:-10px;
+.prev{
+left:0;
 }
 
-.scroll-right{
-right:-10px;
+.next{
+right:0;
 }
 
-#ini{
-  display:flex;
-  flex-direction:row;
+/* scroll suave */
+
+html{
+scroll-behavior:smooth;
 }
+
 </style>
-
 </head>
 
 <body>
-<nav class="navbar bg-dark border-bottom border-body">
+
+<!-- NAVBAR -->
+
+<nav class="navbar navbar-light">
 
 <div class="container-fluid">
-    <a class="navbar-brand" href="#">
-      <img src="img/logo.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
-      Smelly Food
-    </a>
-  </div>
-    <form method="GET" class="mb-5">
 
-<div class="input-group">
+<a class="navbar-brand">PetReceitas</a>
 
-<input 
-type="text"
-name="busca"
-class="form-control"
-placeholder="Pesquisar receita..."
-value="<?= htmlspecialchars($busca) ?>"
->
-
-<button class="btn btn-success">Pesquisar</button>
-
-<a href="index.php" class="btn btn-secondary">Limpar</a>
-
-</div>
-
+<form class="d-flex" method="GET">
+<input class="form-control me-2" type="search" placeholder="Buscar receita" name="busca">
+<button class="btn btn-outline-success">Buscar</button>
 </form>
+
 <ul class="nav">
-  <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="#ini">Receitas/a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#med">Carrossel</a>
-  </li>
-   <li class="nav-item">
-    <a class="nav-link" href="#ult">Mais Receitas</a>
-  </li>
+<li class="nav-item">
+<a class="nav-link active" href="#ini">Receitas</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" href="adicionar.php">Adicionar</a>
+</li>
 </ul>
+
+</div>
 </nav>
-<div class="container">
-
-<h1 class="text-center mb-4">
-Receitas Naturais para Pets
-</h1>
 
 
+<!-- PRIMEIRA SEÇÃO -->
 
+<section id="ini">
 
+<h2 class="section-title">Receitas Naturais</h2>
 
-<?php if($busca != ""){ ?>
-
-<h3 class="section-title">Resultados</h3>
-
-<div class="carousel-container">
-
-<button class="scroll-btn scroll-left" onclick="scrollCarousel('busca',-300)">❮</button>
-
-<div class="carousel-track" id="busca">
-
-<?php foreach($receitas as $r){ ?>
-
-<div class="card card-receita">
-
-<img src="<?= (!empty($r['imagem']) && file_exists($r['imagem'])) ? $r['imagem'] : 'uploads/padrao.jpg' ?>" class="card-img-top">
-
-<div class="card-body">
-
-<h5><?= $r['nome'] ?></h5>
-
-<p>
-<b>Ingredientes:</b><br>
-<?= limitarTexto($r['ingredientes']) ?>
-</p>
-
-<p>
-<b>Modo:</b><br>
-<?= limitarTexto($r['modPrep']) ?>
-</p>
-
-<a href="receita.php?id=<?= $r['id'] ?>" class="btn btn-success w-100">
-Ver Receita
-</a>
-
-</div>
-
-</div>
-
-<?php } ?>
-
-</div>
-
-<button class="scroll-btn scroll-right" onclick="scrollCarousel('busca',300)">❯</button>
-
-</div>
-
-<?php } else { ?>
-
-
-<section id='apre'>
-  <img src="img/logo.png" class="img-fluid" alt="...">
-  <div>
-    <h2>
-
-    </h2>
-  </div>
-
-</section>
-
-<section id='ini' >
-
-<h3 class="section-title"> Receitas Saudáveis para Bichinhos</h3><br>
-<a href="formreceita.html" class="add-recipe-btn">
+<a href="adicionar.php" class="add-recipe-btn">
 Adicionar Receita
 </a>
 
 <div class="carousel-container">
 
+<button class="carousel-btn prev" onclick="slide(-1,0)">❮</button>
 
-<button class="scroll-btn scroll-left" onclick="scrollCarousel('car1',-300)">❮</button>
+<div class="carousel-track" id="track0">
 
-<div class="carousel-track" id="car1">
+<?php foreach($primeira as $r): ?>
 
-<?php foreach($secao1 as $r){ ?>
+<div class="card recipe-card">
 
-<div class="card card-receita">
+<img src="<?= $r['imagem'] ?>">
 
-<img src="<?= $r['imagem'] ?>" class="card-img-top">
 <div class="card-body">
 
-<h5><?= $r['nome'] ?></h5>
+<h5 class="card-title">
+<?= $r['nome'] ?>
+</h5>
 
-<p><b>Ingredientes:</b><br><?= limitarTexto($r['ingredientes']) ?></p>
+<p class="card-text">
+<?= substr($r['ingredientes'],0,80) ?>...
+</p>
 
-<p><b>Modo:</b><br><?= limitarTexto($r['modPrep']) ?></p>
-
-<a href="receita.php?id=<?= $r['id'] ?>" class="btn btn-success w-100">
-Ver Receita
+<a href="receita.php?id=<?= $r['id'] ?>" class="btn btn-success">
+Ver receita
 </a>
 
 </div>
+</div>
+
+<?php endforeach; ?>
 
 </div>
 
-<?php } ?>
+<button class="carousel-btn next" onclick="slide(1,0)">❯</button>
 
 </div>
 
-<button class="scroll-btn scroll-right" onclick="scrollCarousel('car1',300)">❯</button>
-
-</div>
 </section>
 
 
+<!-- SEGUNDA SEÇÃO -->
 
-<section id='med'>
-<div id="carouselExampleCaptions" class="carousel slide">
-  <div class="carousel-indicators">
-    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-  </div>
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="img/carrousel1.png" class="d-block w-100" alt="...">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>Conheça novas receitas.</h5>
-       
-      </div>
-    </div>
-    <div class="carousel-item">
-      <img src="img/carrousel2.png" class="d-block w-100" alt="...">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>Descubra o melhor da Alimentação para se pet.</h5>
-        
-      </div>
-    </div>
-    <div class="carousel-item">
-      <img src="img/carrousel3.png" class="d-block w-100" alt="...">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>Seja mais saudável,mais feliz.</h5>
-    
-      </div>
-    </div>
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-</div>
-</section>
+<?php if(!$busca): ?>
 
-<section id='ult'>
+<section>
 
-<h3 class="section-title">Mais Receitas</h3>
+<h2>Mais Receitas</h2>
 
 <div class="carousel-container">
 
-<button class="scroll-btn scroll-left" onclick="scrollCarousel('car2',-300)">❮</button>
+<button class="carousel-btn prev" onclick="slide(-1,1)">❮</button>
 
-<div class="carousel-track" id="car2">
+<div class="carousel-track" id="track1">
 
-<?php foreach($secao2 as $r){ ?>
+<?php foreach($segunda as $r): ?>
 
-<div class="card card-receita">
+<div class="card recipe-card">
 
-<img src="<?= (!empty($r['imagem']) && file_exists($r['imagem'])) ? $r['imagem'] : 'uploads/padrao.jpg' ?>" class="card-img-top">
+<img src="<?= $r['imagem'] ?>">
 
 <div class="card-body">
 
-<h5><?= $r['nome'] ?></h5>
+<h5 class="card-title">
+<?= $r['nome'] ?>
+</h5>
 
-<p><b>Ingredientes:</b><br><?= limitarTexto($r['ingredientes']) ?></p>
+<p class="card-text">
+<?= substr($r['ingredientes'],0,80) ?>...
+</p>
 
-<p><b>Modo:</b><br><?= limitarTexto($r['modPrep']) ?></p>
-
-<a href="receita.php?id=<?= $r['id'] ?>" class="btn btn-success w-100">
-Ver Receita
+<a href="receita.php?id=<?= $r['id'] ?>" class="btn btn-success">
+Ver receita
 </a>
 
 </div>
+</div>
+
+<?php endforeach; ?>
 
 </div>
 
-<?php } ?>
+<button class="carousel-btn next" onclick="slide(1,1)">❯</button>
 
 </div>
 
-<button class="scroll-btn scroll-right" onclick="scrollCarousel('car2',300)">❯</button>
-
-</div>
-
-<?php } ?>
-
-</div>
 </section>
 
+<?php endif; ?>
+
+
+<!-- FOOTER -->
+
 <footer>
-  <h2>
-    Projeto de GCW (Gerênciamento de Conexões Web) 
-    <br>
-    Profª.:Edilma Bindá
-    <br>
-    Lorena da Silva Rodrigues - 3º C
-  </h2>
-   
-
-  
+<p>© 2026 PetReceitas - Receitas naturais para pets</p>
 </footer>
-
 
 
 <script>
 
-function scrollCarousel(id,amount){
-document.getElementById(id).scrollBy({
-left:amount,
-behavior:"smooth"
-});
+let pos=[0,0];
+
+function slide(dir,id){
+
+const track=document.getElementById("track"+id);
+
+const card=track.querySelector(".recipe-card");
+
+const largura=card.offsetWidth+15;
+
+pos[id]+=dir;
+
+if(pos[id]<0)pos[id]=0;
+
+track.style.transform=`translateX(${-pos[id]*largura}px)`;
+
 }
-
-const sliders=document.querySelectorAll(".carousel-track");
-
-sliders.forEach(slider=>{
-
-let isDown=false;
-let startX;
-let scrollLeft;
-
-slider.addEventListener("mousedown",e=>{
-isDown=true;
-startX=e.pageX-slider.offsetLeft;
-scrollLeft=slider.scrollLeft;
-});
-
-slider.addEventListener("mouseleave",()=>{isDown=false});
-slider.addEventListener("mouseup",()=>{isDown=false});
-
-slider.addEventListener("mousemove",e=>{
-if(!isDown)return;
-e.preventDefault();
-const x=e.pageX-slider.offsetLeft;
-const walk=(x-startX)*1.5;
-slider.scrollLeft=scrollLeft-walk;
-});
-
-});
 
 </script>
 
