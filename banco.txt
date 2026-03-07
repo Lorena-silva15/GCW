@@ -1,0 +1,13 @@
+CREATE DATABASE restaurante;
+
+USE restaurante;
+
+CREATE TABLE receitas(
+        id INT PRIMARY KEY AUTO_INCREMENT,
+            nome VARCHAR(100) NOT NULL,
+                ingredientes TEXT NOT NULL,
+                    modPrep TEXT NOT NULL,
+                        imagem VARCHAR(255),
+                            criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+)
