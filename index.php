@@ -1,5 +1,5 @@
 <?php
-
+require 'conexao.php';
 
 $busca = $_GET['busca'] ?? "";
 
