@@ -368,21 +368,21 @@ Ver Receita
   </div>
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <img src="img/carrousel1" class="d-block w-100" alt="...">
+      <img src="img/carrousel1.png" class="d-block w-100" alt="...">
       <div class="carousel-caption d-none d-md-block">
         <h5>Conheça novas receitas.</h5>
        
       </div>
     </div>
     <div class="carousel-item">
-      <img src="img/carrousel2" class="d-block w-100" alt="...">
+      <img src="img/carrousel2.png" class="d-block w-100" alt="...">
       <div class="carousel-caption d-none d-md-block">
         <h5>Descubra o melhor da Alimentação para se pet.</h5>
         
       </div>
     </div>
     <div class="carousel-item">
-      <img src="img/carrousel3" class="d-block w-100" alt="...">
+      <img src="img/carrousel3.png" class="d-block w-100" alt="...">
       <div class="carousel-caption d-none d-md-block">
         <h5>Seja mais saudável,mais feliz.</h5>
     
