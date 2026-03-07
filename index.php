@@ -203,12 +203,16 @@ left:-10px;
 right:-10px;
 }
 
+#ini{
+  display:flex;
+  flex-direction:row;
+}
 </style>
 
 </head>
 
 <body>
-<nav>
+<nav class="navbar bg-dark border-bottom border-body">
 
 <div class="container-fluid">
     <a class="navbar-brand" href="#">
@@ -316,11 +320,15 @@ Ver Receita
 
 </section>
 
-<section id='ini'>
+<section id='ini' >
 
-<h3 class="section-title"> Receitas Saudáveis para Bichinhos</h3>
+<h3 class="section-title"> Receitas Saudáveis para Bichinhos</h3><br>
+<a href="formreceita.html" class="add-recipe-btn">
+Adicionar Receita
+</a>
 
 <div class="carousel-container">
+
 
 <button class="scroll-btn scroll-left" onclick="scrollCarousel('car1',-300)">❮</button>
 
@@ -330,8 +338,7 @@ Ver Receita
 
 <div class="card card-receita">
 
-<img src="<?= (!empty($r['imagem']) && file_exists($r['imagem'])) ? $r['imagem'] : 'uploads/padrao.jpg' ?>" class="card-img-top">
-
+<img src="<?= $r['imagem'] ?>" class="card-img-top">
 <div class="card-body">
 
 <h5><?= $r['nome'] ?></h5>
@@ -360,7 +367,7 @@ Ver Receita
 
 
 <section id='med'>
-<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="true">
+<div id="carouselExampleCaptions" class="carousel slide">
   <div class="carousel-indicators">
     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
