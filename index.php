@@ -235,11 +235,12 @@ value="<?= htmlspecialchars($busca) ?>"
   </li>
 </ul>
 </nav>
-<div class="container">
-
 <h1 class="text-center mb-4">
 Receitas Naturais para Pets
 </h1>
+<div class="container">
+
+
 
 
 
@@ -304,12 +305,15 @@ Ver Receita
 
 </section>
 
-<section id='ini' >
-
-<h3 class="section-title"> Receitas Saudáveis para Bichinhos</h3><br>
+<section id='ini' class='row'>
+  <div>
+    <h3 class="section-title"> Receitas Saudáveis para Bichinhos</h3><br>
 <a href="formreceita.html" class="add-recipe-btn">
 Adicionar Receita
 </a>
+  </div>
+
+
 
 <div class="carousel-container">
 
