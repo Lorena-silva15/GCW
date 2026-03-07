@@ -7,6 +7,9 @@
 <title>Adicionar Receita</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&family=DynaPuff:wght@400..700&display=swap" rel="stylesheet">
 
 <style>
 
@@ -48,8 +51,8 @@ margin-bottom:15px;
 }
 
 body{
-font-family:'Segoe UI',sans-serif;
-background:#f7f9fc;
+font-family:"Comic Relief", system-ui;
+background-image:url('img/image.png');
 padding:40px;
 }
 
