@@ -196,7 +196,7 @@ right:-10px;
 </head>
 
 <body>
-<nav class="navbar bg-dark border-bottom border-body">
+<nav class="navbar ">
 
 <div class="container-fluid">
     <a class="navbar-brand" href="#">
