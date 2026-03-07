@@ -114,7 +114,7 @@ Menu
 </button>
 
 <ul class="dropdown-menu">
-<li><a class="dropdown-item" href="formreceita.html">Adicionar Receita</a></li>
+<li><a class="dropdown-item" href="formreceita.php">Adicionar Receita</a></li>
 </ul>
 </div>
 

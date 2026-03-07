@@ -77,6 +77,23 @@ justify-content:space-between;
 align-items:center;
 }
 
+ul#itemList button{
+border:none;
+background:none;
+color:red;
+font-size:18px;
+cursor:pointer;
+}
+
+#preview{
+margin-top:10px;
+width:100%;
+max-height:200px;
+object-fit:cover;
+border-radius:10px;
+display:none;
+}
+
 </style>
 </head>
 
@@ -96,18 +113,20 @@ align-items:center;
 <input type="text" name="nome" required class="form-control">
 
 <label class="mt-3">Imagem da Receita</label>
-<input type="file" name="img" accept="image/*" class="form-control">
+<input type="file" name="img" id="imagem" accept="image/*" class="form-control">
+
+<!-- PREVIEW DA IMAGEM -->
+<img id="preview">
 
 <label class="mt-3">Ingredientes</label>
 <input type="text" id="dynamicInput" placeholder="Digite e pressione Enter" class="form-control">
 
 <ul id="itemList"></ul>
 
-<!-- campo oculto que envia os ingredientes -->
 <input type="hidden" name="ingredientes" id="ingredientesHidden">
 
 <label class="mt-3">Modo de Preparo</label>
-<input type="text" name="modPrep" class="form-control">
+<textarea name="modPrep" class="form-control" rows="4"></textarea>
 
 <button type="submit" class="btn btn-primary mt-4 w-100">
 Adicionar Receita
@@ -181,6 +200,33 @@ form.addEventListener("submit",function(){
 hidden.value = items.join(", ");
 
 loading.classList.add("show");
+
+});
+
+
+/* PREVIEW DA IMAGEM */
+
+const inputImagem = document.getElementById("imagem");
+const preview = document.getElementById("preview");
+
+inputImagem.addEventListener("change",function(){
+
+const file = this.files[0];
+
+if(file){
+
+const reader = new FileReader();
+
+reader.onload = function(e){
+
+preview.src = e.target.result;
+preview.style.display="block";
+
+}
+
+reader.readAsDataURL(file);
+
+}
 
 });
 
