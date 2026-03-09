@@ -1,14 +1,17 @@
 <?php
-$host = 'localhost';
-$dbname = 'restaurante';
-$user = 'root';
-$pass = '';
-try {
-$pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
-// Habilita erros do PDO
+
+$host = "localhost";
+$db   = "restaurante";
+$user = "root";
+$pass = "";
+
+$pdo = new PDO(
+"mysql:host=$host;dbname=$db;charset=utf8mb4",
+$user,
+$pass
+);
+
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-echo "Conexão bem-sucedida!";
-} catch (PDOException $e) {
-echo "Erro na conexão: " . $e->getMessage();
-}
+$pdo->exec("SET NAMES utf8mb4");
+
 ?>

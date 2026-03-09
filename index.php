@@ -1,4 +1,5 @@
 <?php
+
 require 'conexao.php';
 
 $busca = $_GET['busca'] ?? "";
@@ -68,7 +69,7 @@ body{
 background-image: url('img/image.png');
 font-family:"Comic Relief", system-ui;
 padding:30px;
-scroll-beheavior: smooth;
+scroll-behavior: smooth;
 }
 
 /* NAVBAR LADO A LADO */
@@ -249,7 +250,7 @@ value="<?= htmlspecialchars($busca) ?>"
 </form>
 <ul class="nav">
   <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="#ini">Receitas/a>
+    <a class="nav-link active" aria-current="page" href="#ini">Receitas</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="#med">Carrossel</a>
@@ -283,8 +284,8 @@ Receitas Naturais para Pets
 <?php foreach($receitas as $r){ ?>
 
 <div class="card card-receita">
+<img src="<?= (!empty($r['imagem']) && file_exists($r['imagem'])) ? $r['imagem'] : 'uploads/padrao.jpg' ?>" class="card-img-top">
 
-<img src="<?= (!empty($r['imagem']) && file_exists($r['imagem'])) ? $r['imagem'] : 'img/padrao.jpg' ?>" class="card-img-top">
 <div class="card-body">
 
 <h5><?= $r['nome'] ?></h5>
@@ -331,7 +332,7 @@ Ver Receita
 <section id='ini' class='row'>
   <div>
     <h3 class="section-title"> Receitas Saudáveis para Bichinhos</h3><br>
-<a href="formreceita.html" class="add-recipe-btn">
+<a href="formreceita.php" class="add-recipe-btn">
 Adicionar Receita
 </a>
   </div>
