@@ -43,6 +43,8 @@ $metade = ceil($total/2);
 $secao1 = array_slice($receitas,0,$metade);
 $secao2 = array_slice($receitas,$metade);
 
+$pdo->exec("set names utf8");
+
 ?>
 
 <!DOCTYPE html>
@@ -123,60 +125,83 @@ margin-top:40px;
 margin-bottom:20px;
 }
 
-/* CARROSSEL */
+//* CONTAINER */
 
 .carousel-container{
 position:relative;
+width:100%;
+overflow:hidden;
 }
+
+/* TRILHO */
 
 .carousel-track{
 display:flex;
-transition:transform 0.6s cubic-bezier(.25,.8,.25,1);
+gap:20px;
+
+overflow-x:auto;
+scroll-behavior:smooth;
+
+padding:10px;
+
+scroll-snap-type:x mandatory;
 }
 
 .carousel-track::-webkit-scrollbar{
 display:none;
 }
 
+/* CARDS */
+
 .card-receita{
-min-width:250px;
-max-width:250px;
-flex-shrink:0;
-transition:.3s;
+
+min-width:260px;
+max-width:260px;
+
+flex:0 0 auto;
+
+border-radius:12px;
+
+transition:0.25s;
+
 scroll-snap-align:start;
+
+display:flex;
+flex-direction:column;
+
 }
 
 .card-receita img{
-height:160px;
+width:100%;
+height:170px;
 object-fit:cover;
-}
-
-.card-receita:hover{
-transform:scale(1.05);
-}
-
-.card-body{
-display:flex;
-flex-direction:column;
-}
-
-.card-body a{
-margin-top:auto;
 }
 
 /* BOTÕES */
 
 .scroll-btn{
+
 position:absolute;
-top:40%;
+
+top:45%;
+
 transform:translateY(-50%);
+
 background:#26a69a;
+
 border:none;
+
 color:white;
+
 width:40px;
 height:40px;
+
 border-radius:50%;
+
 cursor:pointer;
+
+z-index:10;
+
 }
 
 .scroll-left{
@@ -187,9 +212,8 @@ left:-10px;
 right:-10px;
 }
 
-#ini{
-  display:flex;
-  flex-direction:row;
+.scroll-btn:hover{
+background:#1f8f86;
 }
 </style>
 
@@ -260,8 +284,7 @@ Receitas Naturais para Pets
 
 <div class="card card-receita">
 
-<img src="<?= (!empty($r['imagem']) && file_exists($r['imagem'])) ? $r['imagem'] : 'uploads/padrao.jpg' ?>" class="card-img-top">
-
+<img src="<?= (!empty($r['imagem']) && file_exists($r['imagem'])) ? $r['imagem'] : 'img/padrao.jpg' ?>" class="card-img-top">
 <div class="card-body">
 
 <h5><?= $r['nome'] ?></h5>
@@ -457,41 +480,69 @@ Ver Receita
 
 <script>
 
+/* BOTÕES */
+
 function scrollCarousel(id,amount){
-document.getElementById(id).scrollBy({
+
+const track=document.getElementById(id);
+
+track.scrollBy({
 left:amount,
 behavior:"smooth"
 });
+
 }
 
-const sliders=document.querySelectorAll(".carousel-track");
 
-sliders.forEach(slider=>{
+/* DRAG COM MOUSE */
+
+document.querySelectorAll(".carousel-track").forEach(track=>{
 
 let isDown=false;
 let startX;
 let scrollLeft;
 
-slider.addEventListener("mousedown",e=>{
+track.addEventListener("mousedown",e=>{
+
 isDown=true;
-startX=e.pageX-slider.offsetLeft;
-scrollLeft=slider.scrollLeft;
+
+track.classList.add("dragging");
+
+startX=e.pageX-track.offsetLeft;
+
+scrollLeft=track.scrollLeft;
+
 });
 
-slider.addEventListener("mouseleave",()=>{isDown=false});
-slider.addEventListener("mouseup",()=>{isDown=false});
+track.addEventListener("mouseleave",()=>{
 
-slider.addEventListener("mousemove",e=>{
+isDown=false;
+
+});
+
+track.addEventListener("mouseup",()=>{
+
+isDown=false;
+
+});
+
+track.addEventListener("mousemove",e=>{
+
 if(!isDown)return;
+
 e.preventDefault();
-const x=e.pageX-slider.offsetLeft;
-const walk=(x-startX)*1.5;
-slider.scrollLeft=scrollLeft-walk;
+
+const x=e.pageX-track.offsetLeft;
+
+const walk=(x-startX)*2;
+
+track.scrollLeft=scrollLeft-walk;
+
 });
 
 });
 
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>
