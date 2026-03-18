@@ -10,3 +10,55 @@ CREATE TABLE receitas(
                         imagem VARCHAR(255),
                             criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+INSERT INTO receitas (nome, ingredientes, modPrep, imagem) VALUES
+
+('Biscoito de Banana para Cães',
+'banana madura, aveia em flocos, ovo',
+'Amasse a banana, misture com aveia e ovo. Modele biscoitos e asse por 20 minutos.',
+'https://images.unsplash.com/photo-1601758003122-58cbb9bd9f4b?auto=format&fit=crop&w=800&q=80'),
+
+('Arroz com Frango para Pets',
+'arroz integral, frango desfiado, cenoura ralada',
+'Cozinhe o arroz e misture com frango desfiado e cenoura cozida.',
+'https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?auto=format&fit=crop&w=800&q=80'),
+
+('Patê Natural de Fígado',
+'fígado de frango, cenoura, água',
+'Cozinhe tudo e bata no liquidificador até formar um patê.',
+'https://images.unsplash.com/photo-1604909053195-9e8d2b63b6c2?auto=format&fit=crop&w=800&q=80'),
+
+('Bolinhos de Abóbora',
+'abóbora cozida, farinha de aveia, ovo',
+'Misture tudo, faça bolinhas e asse por 25 minutos.',
+'https://images.unsplash.com/photo-1606857521015-7f9fcf423740?auto=format&fit=crop&w=800&q=80'),
+
+('Petisco de Maçã e Aveia',
+'maçã picada, aveia, ovo',
+'Misture os ingredientes e asse pequenas porções por 20 minutos.',
+'https://images.unsplash.com/photo-1560807707-8cc77767d783?auto=format&fit=crop&w=800&q=80'),
+
+('Purê de Batata Doce',
+'batata doce, frango desfiado',
+'Cozinhe a batata doce, amasse e misture com frango.',
+'https://images.unsplash.com/photo-1604908176997-4313c3c5b36d?auto=format&fit=crop&w=800&q=80'),
+
+('Biscoito de Cenoura',
+'cenoura ralada, farinha integral, ovo',
+'Misture tudo, molde biscoitos e asse por 25 minutos.',
+'https://images.unsplash.com/photo-1585238342028-4f7f0d66d5c2?auto=format&fit=crop&w=800&q=80'),
+
+('Arroz com Legumes',
+'arroz integral, abobrinha, cenoura',
+'Cozinhe o arroz e misture com legumes cozidos.',
+'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80'),
+
+('Petisco de Frango Assado',
+'frango cozido desfiado, aveia',
+'Misture e asse pequenas porções por 20 minutos.',
+'https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=800&q=80'),
+
+('Bolinho de Peixe para Gatos',
+'peixe cozido, batata, ovo',
+'Misture tudo, faça bolinhos e asse por 20 minutos.',
+'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80');

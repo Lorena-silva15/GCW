@@ -79,6 +79,8 @@ align-items:center;
 justify-content:space-between;
 flex-wrap:wrap;
 gap:20px;
+background-color:white;
+
 }
 
 nav ul{
@@ -109,7 +111,19 @@ padding:15px;
 margin-bottom:20px;
 
 }
+ 
 
+button{
+ background-color: orange;
+ border-radius:15px;
+ border:0px;
+ padding:3%
+}
+
+a{
+  text-decoration:none;
+  color: white;
+}
 footer{
 
 background:rgba(255,255,255,0.4);
@@ -171,6 +185,25 @@ display:flex;
 flex-direction:column;
 
 }
+#apre{
+  display:flex;
+  flex-direction:row;
+  flex-wrap:wrap;
+  text-align:center;
+  justify-content:center
+}
+h2{
+  text-align:center;
+  justify-content:center;
+  margin-top:15%
+  
+  
+
+}
+.container{
+  height:80%;
+  text-align:center
+}
 
 .card-receita img{
 width:100%;
@@ -223,12 +256,12 @@ background:#1f8f86;
 <body>
 <nav class="navbar ">
 
-<div class="container-fluid">
+<!-- <div class="container-fluid">
     <a class="navbar-brand" href="#">
       <img src="img/logo.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
       Smelly Food
     </a>
-  </div>
+  </div> -->
     <form method="GET" class="mb-5">
 
 <div class="input-group">
@@ -254,10 +287,7 @@ value="<?= htmlspecialchars($busca) ?>"
   </li>
   <li class="nav-item">
     <a class="nav-link" href="#med">Carrossel</a>
-  </li>
-   <li class="nav-item">
-    <a class="nav-link" href="#ult">Mais Receitas</a>
-  </li>
+  
 </ul>
 </nav>
 <h1 class="text-center mb-4">
@@ -284,8 +314,7 @@ Receitas Naturais para Pets
 <?php foreach($receitas as $r){ ?>
 
 <div class="card card-receita">
-<img src="<?= (!empty($r['imagem']) && file_exists($r['imagem'])) ? $r['imagem'] : 'uploads/padrao.jpg' ?>" class="card-img-top">
-
+<img src="<?= $r['imagem'] ?>" onerror="this.src='https://via.placeholder.com/300'">
 <div class="card-body">
 
 <h5><?= $r['nome'] ?></h5>
@@ -318,23 +347,27 @@ Ver Receita
 
 <?php } else { ?>
 
-
+<button>
+    <a href="formreceita.php" class="add-recipe-btn">
+Adicionar Receita
+</a>
+  </button>
 <section id='apre'>
+  
+  
   <img src="img/logo.png" class="img-fluid" alt="...">
-  <div>
+  
     <h2>
-
+        Boas vindas ao Smelly Foods
     </h2>
-  </div>
+  
 
 </section>
 
 <section id='ini' class='row'>
   <div>
     <h3 class="section-title"> Receitas Saudáveis para Bichinhos</h3><br>
-<a href="formreceita.php" class="add-recipe-btn">
-Adicionar Receita
-</a>
+
   </div>
 
 
@@ -466,7 +499,7 @@ Ver Receita
 
 <footer>
   <h2>
-    Projeto de GCW (Gerênciamento de Conexões Web) 
+    Projeto de GCW (Gerênciamento de Conteúdo Web) 
     <br>
     Profª.:Edilma Bindá
     <br>
